@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Tema Cokelat Perpustakaan Digital Lyviana */
+body { font-family: sans-serif; margin: 0; background: #fdfbfb; color: #2c1e0f; }
+.atas { background: #533818c5; color: white; padding: 20px; text-align: center; }
+.atas h1 { font-size: 28px; font-weight: bold; margin: 0; }
+.menu { background: #3e2800; padding: 14px; text-align: center; }
+.menu a { color: white; text-decoration: none; margin: 0 12px; font-weight: bold; font-size: 14px; }
+.menu a:hover { text-decoration: underline; }
+.btn-logout { background: #c0392b; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 13px; }
+.isi { padding: 30px 20px; max-width: 1140px; margin: 0 auto; min-height: 70vh; }
+.bawah { background: #533818c5; color: white; text-align: center; padding: 15px; margin-top: auto; }
+.wadah { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 20px; }
+.kotak { background: white; padding: 20px; border-radius: 8px; width: 250px; border-bottom: 4px solid #493b0f; box-shadow: 2px 2px 8px rgba(0,0,0,0.1); }
+.tombol { display: inline-block; padding: 8px 15px; background: #604624; color: white; text-decoration: none; border-radius: 4px; margin-top: 15px; font-weight: bold; }
+.detail { background: white; padding: 30px; border-radius: 8px; box-shadow: 2px 2px 8px rgba(0,0,0,0.1); border-left: 5px solid #8c6b42; }
+
+.layout-samping { display: flex; align-items: flex-start; gap: 24px; }
+.panel-kiri { flex: 0 0 310px; background: #fffdf9; padding: 22px; border-radius: 10px; border: 1px solid #e2d5c3; border-left: 6px solid #604624; box-shadow: 0 3px 10px rgba(62, 40, 0, 0.08); }
+.panel-kanan { flex: 1; min-width: 0; background: white; padding: 22px; border-radius: 10px; border: 1px solid #e2d5c3; box-shadow: 0 3px 10px rgba(62, 40, 0, 0.08); }
+.judul-panel { margin-top: 0; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #f0e6d8; color: #3e2800; font-size: 18px; font-weight: bold; }
+.field-vertikal { margin-bottom: 14px; display: flex; flex-direction: column; }
+.field-vertikal label { font-weight: bold; font-size: 13px; color: #493b0f; margin-bottom: 5px; }
+.field-vertikal input, .field-vertikal select { width: 100%; box-sizing: border-box; padding: 9px 11px; border: 1px solid #cbbba0; border-radius: 6px; font-size: 14px; background: #ffffff; outline: none; }
+.teks-error { color: #c0392b; font-size: 12px; margin-top: 4px; min-height: 15px; }
+.grup-tombol-form { display: flex; gap: 8px; margin-top: 8px; }
+.tombol-simpan { flex: 1; padding: 10px 14px; background: #604624; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+.btn-batal { padding: 10px 14px; background: #8c7b6b; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+.bungkus-tabel { overflow-x: auto; border: 1px solid #eee2d3; border-radius: 8px; }
+.tabel-api { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tabel-api th { background: #3e2800; color: white; padding: 11px 12px; text-align: left; }
+.tabel-api td { padding: 10px 12px; border-bottom: 1px solid #f2ebe1; vertical-align: middle; }
+.badge-kat { display: inline-block; background: #8c6b42; color: white; padding: 4px 10px; font-size: 12px; border-radius: 6px; font-weight: bold; }
+.btn-aksi { padding: 5px 10px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 12px; font-weight: bold; margin-right: 4px; }
+.btn-ubah { background: #d68910; }
+.btn-hapus { background: #c0392b; margin-right: 0; }
+.alert-box { padding: 12px 15px; border-radius: 6px; margin-bottom: 18px; font-weight: bold; }
+.alert-success { background: #d4edda; color: #155724; border-left: 5px solid #28a745; }
+.alert-warning { background: #fff3cd; color: #856404; border-left: 5px solid #ffc107; }
+.alert-danger { background: #f8d7da; color: #721c24; border-left: 5px solid #dc3545; }
