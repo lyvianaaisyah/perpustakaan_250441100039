@@ -9,6 +9,7 @@ use App\Models\Anggota;
 use App\Models\Peminjaman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
@@ -162,15 +163,20 @@ class PerpustakaanRbacController extends Controller
     {
         $loginUser = Auth::user();
 
-        // <- modul 5 (Soal 4 & Skenario 14): Cegah siswa melihat riwayat peminjaman siswa lain berdasarkan ID user
-        if ($userId !== null && (int) $userId !== (int) $loginUser->id) {
-            abort(403, 'Akses Ditolak: Anda tidak diizinkan melihat riwayat peminjaman milik pengguna lain.');
-        }
-
         $anggota = Anggota::firstOrCreate(
             ['email' => $loginUser->email],
             ['nama' => $loginUser->name, 'no_telepon' => '-']
         );
+
+        if ($userId !== null) {
+            $targetUser = User::findOrFail($userId);
+            $targetAnggota = Anggota::where('email', $targetUser->email)->first();
+            $samplePeminjaman = new Peminjaman([
+                'anggota_id' => $targetAnggota ? $targetAnggota->id : 0,
+            ]);
+
+            Gate::authorize('view', $samplePeminjaman);
+        }
 
         $riwayat = Peminjaman::with('buku')
             ->where('anggota_id', $anggota->id)
