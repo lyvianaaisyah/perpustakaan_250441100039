@@ -63,15 +63,19 @@
                         <tr>
                             <td>{{ $i + 1 }}</td>
                             <td><span class="badge-kat">{{ $item->kategori->nama ?? '-' }}</span></td>
-                            {{-- SOAL 1 (A1): Celah Stored XSS tanpa escaping --}}
-                            <td><b>{!! $item->judul !!}</b></td>
+                            {{-- SOAL 2 (a): Menambal Stored XSS dengan Blade Escaping {{ }} --}}
+                            <td><b>{{ $item->judul }}</b></td>
                             <td>{{ $item->penulis }}</td>
                             <td>{{ $item->tahun_terbit }}</td>
                             <td>
                                 <a href="{{ route('buku.show', $item->id) }}" class="btn-aksi btn-ubah">Detail</a>
                                 @can('kelola data buku')
-                                    {{-- SOAL 1 (A3): Celah CSRF hapus buku via GET --}}
-                                    <a href="{{ url('/buku/' . $item->id . '/hapus') }}" class="btn-aksi btn-hapus" onclick="return confirm('Hapus buku ini?')">Hapus</a>
+                                    {{-- SOAL 2 (c): Menambal CSRF dengan Form POST + @csrf + @method('DELETE') --}}
+                                    <form action="{{ route('buku.destroy', $item->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Hapus buku ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-aksi btn-hapus">Hapus</button>
+                                    </form>
                                 @endcan
                             </td>
                         </tr>

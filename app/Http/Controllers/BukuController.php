@@ -36,16 +36,16 @@ class BukuController extends Controller
         return redirect()->route('buku.index')->with('sukses', 'Buku berhasil ditambahkan.');
     }
 
-    // SOAL 1 (A2) Celah SQL Injection
+    // SOAL 2 (b): Menambal celah A2 (SQL Injection) dengan Query Binding (?)
     public function cari(Request $request)
     {
         $judul = $request->query('judul');
-        $hasil = DB::select("SELECT * FROM bukus WHERE judul = '$judul'");
+        $hasil = DB::select('SELECT * FROM bukus WHERE judul = ?', [$judul]);
 
         return response()->json($hasil);
     }
 
-    // SOAL 1 (A3) Menghapus buku
+    // SOAL 2 (c): Menghapus buku
     public function destroy(Buku $buku)
     {
         $buku->delete();

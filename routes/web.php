@@ -29,10 +29,11 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('permission:kelola data buku')
         ->name('buku.kelola');
 
-    // SOAL 1 MODUL 6: Route Celah A2, A3, dan A4
+    // SOAL 2 MODUL 6: Route GET hapus diganti menjadi DELETE
     Route::get('/buku-cari', [BukuController::class, 'cari'])->name('buku.cari');
-    Route::get('/buku/{buku}/hapus', [BukuController::class, 'destroy'])->name('buku.hapus.get');
+    Route::delete('/buku/{buku}', [BukuController::class, 'destroy'])->name('buku.destroy');
     Route::get('/peminjaman/{id}', [PeminjamanController::class, 'show'])->name('peminjaman.show');
+
 
     // 2. Dashboard Admin (Khusus Role Admin - Skenario 1, 2, 13)
     Route::middleware(['role:admin', 'permission:akses dashboard admin'])->group(function () {
