@@ -14,11 +14,12 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // 1. Akun Admin
-        $admin = User::firstOrCreate(
+// 1. Akun Admin
+        $admin = User::updateOrCreate(
             ['email' => 'admin@perpustakaan.com'],
             [
                 'name' => 'Lyviana Admin',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('AdminLyviana#250441100039'),
             ]
         );
         $admin->syncRoles(['admin']);
