@@ -15,11 +15,11 @@ class BukuController extends Controller
         return view('buku.index', ['buku' => $data]);
     }
 
-    public function show($id)
+    public function create()
     {
-        $detail = Buku::with('kategori')->find($id);
-        
-        return view('buku.detail', ['buku_detail' => $detail]);
+        $data = Buku::with('kategori')->latest()->get();
+
+        return view('buku.index', ['buku' => $data]);
     }
 
     public function store(Request $request)
@@ -36,7 +36,37 @@ class BukuController extends Controller
         return redirect()->route('buku.index')->with('sukses', 'Buku berhasil ditambahkan.');
     }
 
-    // SOAL 2 (b): Menambal celah A2 (SQL Injection) dengan Query Binding (?)
+    public function show($id)
+    {
+        $detail = Buku::with('kategori')->find($id);
+        
+        return view('buku.detail', ['buku_detail' => $detail]);
+    }
+
+    public function edit(Buku $buku)
+    {
+        $data = Buku::with('kategori')->latest()->get();
+
+        return view('buku.index', [
+            'buku'     => $data,
+            'bukuEdit' => $buku,
+        ]);
+    }
+
+    public function update(Request $request, Buku $buku)
+    {
+        $validated = $request->validate([
+            'kategori_id'  => ['required', 'exists:kategoris,id'],
+            'judul'        => ['required', 'string', 'min:3', 'max:150'],
+            'penulis'      => ['required', 'string', 'min:3', 'max:100'],
+            'tahun_terbit' => ['required', 'integer', 'min:1900', 'max:' . date('Y')],
+        ]);
+
+        $buku->update($validated);
+
+        return redirect()->route('buku.index')->with('sukses', 'Data buku berhasil diperbarui.');
+    }
+
     public function cari(Request $request)
     {
         $judul = $request->query('judul');
@@ -45,7 +75,6 @@ class BukuController extends Controller
         return response()->json($hasil);
     }
 
-    // SOAL 2 (c): Menghapus buku
     public function destroy(Buku $buku)
     {
         $buku->delete();

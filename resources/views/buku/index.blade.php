@@ -7,45 +7,61 @@
     <div id="alert-area"></div>
 
     <div class="layout-samping">
-        @can('kelola data buku')
+        @can('kelola-buku')
         <aside id="kartu-form" class="panel-kiri">
-            <h3 id="form-title" class="judul-panel">Tambah Buku Baru</h3>
-            <form action="{{ route('buku.store') }}" method="POST">
+            <h3 id="form-title" class="judul-panel">
+                {{ isset($bukuEdit) ? 'Ubah Buku #' . $bukuEdit->id : 'Tambah Buku Baru' }}
+            </h3>
+            <form action="{{ isset($bukuEdit) ? route('buku.update', $bukuEdit->id) : route('buku.store') }}" method="POST">
                 @csrf
+                @if(isset($bukuEdit))
+                    @method('PUT')
+                @endif
+
                 <div class="field-vertikal">
                     <label for="buku-kategori_id">Kategori Buku</label>
                     <select id="buku-kategori_id" name="kategori_id" required>
                         <option value="">-- Pilih Kategori --</option>
                         @foreach(\App\Models\Kategori::all() as $kat)
-                            <option value="{{ $kat->id }}">{{ $kat->nama }}</option>
+                            <option value="{{ $kat->id }}" @selected(old('kategori_id', $bukuEdit->kategori_id ?? '') == $kat->id)>{{ $kat->nama }}</option>
                         @endforeach
                     </select>
                 </div>
 
                 <div class="field-vertikal">
                     <label for="buku-judul">Judul Buku</label>
-                    <input type="text" id="buku-judul" name="judul" placeholder="Ketik judul buku..." required>
+                    <input type="text" id="buku-judul" name="judul" value="{{ old('judul', $bukuEdit->judul ?? '') }}" placeholder="Ketik judul buku..." required>
                 </div>
 
                 <div class="field-vertikal">
                     <label for="buku-penulis">Nama Penulis</label>
-                    <input type="text" id="buku-penulis" name="penulis" placeholder="Contoh: Lyviana Aisyah" required>
+                    <input type="text" id="buku-penulis" name="penulis" value="{{ old('penulis', $bukuEdit->penulis ?? '') }}" placeholder="Contoh: Lyviana Aisyah" required>
                 </div>
 
                 <div class="field-vertikal">
                     <label for="buku-tahun_terbit">Tahun Terbit</label>
-                    <input type="number" id="buku-tahun_terbit" name="tahun_terbit" placeholder="2026" required>
+                    <input type="number" id="buku-tahun_terbit" name="tahun_terbit" value="{{ old('tahun_terbit', $bukuEdit->tahun_terbit ?? '') }}" placeholder="2026" required>
                 </div>
 
                 <div class="grup-tombol-form">
-                    <button type="submit" class="tombol-simpan" id="btn-simpan">Simpan Buku</button>
+                    <button type="submit" class="tombol-simpan" id="btn-simpan">
+                        {{ isset($bukuEdit) ? 'Simpan Perubahan' : 'Simpan Buku' }}
+                    </button>
+                    @if(isset($bukuEdit))
+                        <a href="{{ route('buku.index') }}" class="btn-batal" style="text-decoration: none; text-align: center;">Batal</a>
+                    @endif
                 </div>
             </form>
         </aside>
         @endcan
 
         <section class="panel-kanan">
-            <h3 class="judul-panel">Tabel Koleksi Buku</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 class="judul-panel" style="margin: 0;">Tabel Koleksi Buku</h3>
+                @can('kelola-buku')
+                    <a href="{{ route('buku.create') }}" class="tombol">+ Tambah Buku</a>
+                @endcan
+            </div>
             <div class="bungkus-tabel">
                 <table class="tabel-api">
                     <thead>
@@ -63,14 +79,13 @@
                         <tr>
                             <td>{{ $i + 1 }}</td>
                             <td><span class="badge-kat">{{ $item->kategori->nama ?? '-' }}</span></td>
-                            {{-- SOAL 2 (a): Menambal Stored XSS dengan Blade Escaping {{ }} --}}
                             <td><b>{{ $item->judul }}</b></td>
                             <td>{{ $item->penulis }}</td>
                             <td>{{ $item->tahun_terbit }}</td>
                             <td>
                                 <a href="{{ route('buku.show', $item->id) }}" class="btn-aksi btn-ubah">Detail</a>
-                                @can('kelola data buku')
-                                    {{-- SOAL 2 (c): Menambal CSRF dengan Form POST + @csrf + @method('DELETE') --}}
+                                @can('kelola-buku')
+                                    <a href="{{ route('buku.edit', $item->id) }}" class="btn-aksi btn-ubah">Ubah</a>
                                     <form action="{{ route('buku.destroy', $item->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Hapus buku ini?')">
                                         @csrf
                                         @method('DELETE')
