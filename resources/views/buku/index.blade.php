@@ -7,45 +7,38 @@
     <div id="alert-area"></div>
 
     <div class="layout-samping">
-        {{-- <- modul 5 (Soal 4 & 5): Form Tambah/Ubah Buku HANYA muncul jika punya permission 'kelola data buku' (Admin & Petugas) --}}
         @can('kelola data buku')
         <aside id="kartu-form" class="panel-kiri">
             <h3 id="form-title" class="judul-panel">Tambah Buku Baru</h3>
-            <form id="form-buku" novalidate>
-                <input type="hidden" id="buku-id">
-
+            <form action="{{ route('buku.store') }}" method="POST">
+                @csrf
                 <div class="field-vertikal">
                     <label for="buku-kategori_id">Kategori Buku</label>
-                    <select id="buku-kategori_id">
+                    <select id="buku-kategori_id" name="kategori_id" required>
                         <option value="">-- Pilih Kategori --</option>
                         @foreach(\App\Models\Kategori::all() as $kat)
                             <option value="{{ $kat->id }}">{{ $kat->nama }}</option>
                         @endforeach
                     </select>
-                    <small class="teks-error" id="err-kategori_id"></small>
                 </div>
 
                 <div class="field-vertikal">
                     <label for="buku-judul">Judul Buku</label>
-                    <input type="text" id="buku-judul" placeholder="Ketik judul buku...">
-                    <small class="teks-error" id="err-judul"></small>
+                    <input type="text" id="buku-judul" name="judul" placeholder="Ketik judul buku..." required>
                 </div>
 
                 <div class="field-vertikal">
                     <label for="buku-penulis">Nama Penulis</label>
-                    <input type="text" id="buku-penulis" placeholder="Contoh: Lyviana Aisyah">
-                    <small class="teks-error" id="err-penulis"></small>
+                    <input type="text" id="buku-penulis" name="penulis" placeholder="Contoh: Lyviana Aisyah" required>
                 </div>
 
                 <div class="field-vertikal">
                     <label for="buku-tahun_terbit">Tahun Terbit</label>
-                    <input type="number" id="buku-tahun_terbit" placeholder="2026">
-                    <small class="teks-error" id="err-tahun_terbit"></small>
+                    <input type="number" id="buku-tahun_terbit" name="tahun_terbit" placeholder="2026" required>
                 </div>
 
                 <div class="grup-tombol-form">
                     <button type="submit" class="tombol-simpan" id="btn-simpan">Simpan Buku</button>
-                    <button type="button" class="btn-batal" id="btn-batal" style="display: none;">Batal</button>
                 </div>
             </form>
         </aside>
@@ -66,7 +59,25 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-buku">
-                        <tr><td colspan="6" style="text-align: center;">Memuat data buku...</td></tr>
+                        @forelse($buku as $i => $item)
+                        <tr>
+                            <td>{{ $i + 1 }}</td>
+                            <td><span class="badge-kat">{{ $item->kategori->nama ?? '-' }}</span></td>
+                            {{-- SOAL 1 (A1): Celah Stored XSS tanpa escaping --}}
+                            <td><b>{!! $item->judul !!}</b></td>
+                            <td>{{ $item->penulis }}</td>
+                            <td>{{ $item->tahun_terbit }}</td>
+                            <td>
+                                <a href="{{ route('buku.show', $item->id) }}" class="btn-aksi btn-ubah">Detail</a>
+                                @can('kelola data buku')
+                                    {{-- SOAL 1 (A3): Celah CSRF hapus buku via GET --}}
+                                    <a href="{{ url('/buku/' . $item->id . '/hapus') }}" class="btn-aksi btn-hapus" onclick="return confirm('Hapus buku ini?')">Hapus</a>
+                                @endcan
+                            </td>
+                        </tr>
+                        @empty
+                        <tr><td colspan="6" style="text-align: center;">Belum ada data buku.</td></tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -81,11 +92,3 @@
         @endforeach
     </div>
 @endsection
-
-@push('scripts')
-<script>
-    // Mengirim status hak akses ke JavaScript agar tombol Ubah/Hapus disembunyikan untuk Siswa
-    window.BISA_KELOLA_BUKU = @json(auth()->check() && auth()->user()->can('kelola data buku'));
-</script>
-<script src="{{ asset('js/buku-client.js') }}"></script>
-@endpush                                                

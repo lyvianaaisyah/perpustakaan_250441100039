@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BukuController;
+use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PerpustakaanRbacController;
 use Illuminate\Support\Facades\Route;
@@ -19,13 +20,19 @@ Route::middleware(['auth'])->group(function () {
     // 1. Katalog & Detail Buku (Admin, Petugas, Siswa memiliki permission 'lihat daftar buku')
     Route::middleware(['permission:lihat daftar buku'])->group(function () {
         Route::get('/buku', [BukuController::class, 'index'])->name('buku.index');
-        Route::get('/buku/{id}', [BukuController::class, 'show'])->name('buku.show');
+        Route::post('/buku', [BukuController::class, 'store'])->name('buku.store');
+        Route::get('/buku/{id}', [BukuController::class, 'show'])->whereNumber('id')->name('buku.show');
     });
 
     // Rute khusus kelola buku (Jika Siswa akses URL /kelola-buku langsung -> Ditolak 403 sesuai Skenario 13)
     Route::get('/kelola-buku', [BukuController::class, 'index'])
         ->middleware('permission:kelola data buku')
         ->name('buku.kelola');
+
+    // SOAL 1 MODUL 6: Route Celah A2, A3, dan A4
+    Route::get('/buku-cari', [BukuController::class, 'cari'])->name('buku.cari');
+    Route::get('/buku/{buku}/hapus', [BukuController::class, 'destroy'])->name('buku.hapus.get');
+    Route::get('/peminjaman/{id}', [PeminjamanController::class, 'show'])->name('peminjaman.show');
 
     // 2. Dashboard Admin (Khusus Role Admin - Skenario 1, 2, 13)
     Route::middleware(['role:admin', 'permission:akses dashboard admin'])->group(function () {
@@ -78,5 +85,4 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Memuat rute Login, Register (middleware 'guest'), dan Logout dari Laravel Breeze
 require __DIR__.'/auth.php';
