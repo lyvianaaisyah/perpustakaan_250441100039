@@ -15,9 +15,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // SOAL 3 MODUL 6: Gate kelola-buku hanya mengizinkan admin dan petugas
-        Gate::define('kelola-buku', function (User $user) {
-            return $user->hasAnyRole(['admin', 'petugas']);
-        });
+        if ($this->app->environment('production')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
     }
 }
